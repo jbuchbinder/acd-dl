@@ -3,7 +3,6 @@ go:
   - 1.6
   - 1.7
   - tip
-  - release
 script:
   - go get -d
   - go build -v
