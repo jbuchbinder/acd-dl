@@ -1,5 +1,7 @@
 # ACD-DL
 
+[![Build Status](https://secure.travis-ci.org/jbuchbinder/acd-dl.png)](http://travis-ci.org/jbuchbinder/acd-dl)
+
 Recursive downloader for shared content from Amazon Cloud Drive.
 
 ## SYNTAX
