@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gopkg.in/cheggaaa/pb.v1"
 	"io"
 	"log"
@@ -39,16 +40,43 @@ func get(shareId string, data ResourceData, basedir string) error {
 	bar.Start()
 	defer bar.Finish()
 
-	resp, err := http.Get(data.TempLink)
+	dest := basedir + string(os.PathSeparator) + data.Name
+
+	// Check to see if we have already retrieved the file
+	var start int64
+	if fileExists(dest) {
+		if fileSize(dest) >= data.Properties.Size {
+			log.Printf("%s fully retrieved", dest)
+			return nil
+		}
+		start = fileSize(dest)
+	}
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", data.TempLink, nil)
+	if start > 0 {
+		bar.Set64(start)
+		req.Header.Set("Range", fmt.Sprintf("bytes=%d-", start))
+	}
+	resp, err := client.Do(req)
 	if err != nil {
 		log.Printf("ERR: %s", err.Error())
 		return err
 	}
 	defer resp.Body.Close()
-	out, err := os.Create(basedir + string(os.PathSeparator) + data.Name)
-	if err != nil {
-		log.Printf("ERR: %s", err.Error())
-		return err
+	var out *os.File
+	if start == 0 {
+		out, err = os.Create(dest)
+		if err != nil {
+			log.Printf("ERR: %s", err.Error())
+			return err
+		}
+	} else {
+		out, err = os.OpenFile(dest, os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Printf("ERR: %s", err.Error())
+			return err
+		}
 	}
 	defer out.Close()
 	//io.Copy(out, resp.Body)
