@@ -1,5 +1,9 @@
 package main
 
+import (
+	"time"
+)
+
 type SharedCollection struct {
 	ShareId  string `json:"shareId"`
 	ShareURL string `json:"shareURL"`
@@ -40,13 +44,13 @@ type ResourceData struct {
 		//"version":1
 		MD5 string `json:"md5"`
 	} `json:"contentProperties"`
-	//"createdDate":"2016-05-15T20:07:10.418Z"
+	CreatedDate time.Time `json:"createdDate"` //"createdDate":"2016-05-15T20:07:10.418Z"
 	//"parentMap":{"SHARED_COLLECTION":["ID"],"FOLDER":["ID"]}
 	//"createdBy":"acd_cli_oa-SOMETHINGSOMETHING"
-	Restricted bool `json:"restricted"`
-	//"modifiedDate":"2016-05-15T20:29:17.466Z"
-	Name     string `json:"name"`
-	IsShared bool   `json:"isShared"`
+	Restricted   bool      `json:"restricted"`
+	ModifiedDate time.Time `json:"modifiedDate"` //"modifiedDate":"2016-05-15T20:29:17.466Z"
+	Name         string    `json:"name"`
+	IsShared     bool      `json:"isShared"`
 	//Parents []string `json:"parents"`
 	Status string `json:"status"`
 }

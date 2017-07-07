@@ -78,7 +78,13 @@ func get(shareId string, data ResourceData, basedir string) error {
 			return err
 		}
 	}
-	defer out.Close()
+	defer func() {
+		// Close file handle
+		out.Close()
+
+		// Adjust create/modify times
+		os.Chtimes(dest, data.CreatedDate, data.ModifiedDate)
+	}()
 	//io.Copy(out, resp.Body)
 	io.Copy(out, bar.NewProxyReader(resp.Body))
 	return nil
